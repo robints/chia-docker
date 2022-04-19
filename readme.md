@@ -248,7 +248,7 @@ docker logs -f harvester
 3. Add Plots to harvester
 You can run commands (this works for most chia [CLI commands](https://github.com/Chia-Network/chia-blockchain/wiki/CLI-Commands-Reference))
 ```
-docker exec -it farmer bash # 
+docker exec -it farmer bash # use chia command enter docker container. 
 chia add -d /plots/path # add plots path, before add plots volumes.
 chia plots show # show all plots path
 chia farm summary
