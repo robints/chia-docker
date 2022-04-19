@@ -230,3 +230,26 @@ readinessProbe:
 ```
 
 See [Configure Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes) for more information about configuring readiness and liveness probes for Kubernetes clusters. The `initialDelaySeconds` parameter may need to be adjusted higher or lower depending on the speed to start up on the host the container is running on.
+
+# Use harvester Docker Compose
+
+1. Create network bridge, use
+```
+docker network create chia-net
+```
+
+2. Docker compose run
+```
+docker-compose up -d
+docker logs -f farmer
+docker logs -f harvester
+```
+
+3. Add Plots to harvester
+You can run commands (this works for most chia [CLI commands](https://github.com/Chia-Network/chia-blockchain/wiki/CLI-Commands-Reference))
+```
+docker exec -it farmer bash # 
+chia add -d /plots/path # add plots path, before add plots volumes.
+chia plots show # show all plots path
+chia farm summary
+```
