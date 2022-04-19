@@ -1,0 +1,74 @@
+version: "3.6"
+networks:
+  chia-net:
+    external: true
+services:
+  farmer:
+    container_name: farmer
+    restart: unless-stopped
+    image: ghcr.io/chia-network/chia:latest 
+    ports:
+      - 8444:8444
+      - 8555:8555
+      - 8447:8447
+    privileged: true
+    environment:
+      # Farmer Only
+      - service=farmer
+      # Harvester Only
+#     - service=harvester
+#     - farmer_address=192.168.0.10
+#     - farmer_port=8447
+#     - ca=/path/in/container
+#     - keys=copy
+      # Harvester Only END
+      # If you would like to add keys manually via mnemonic file
+      - keys=/path/in/container
+      # OR
+      # Disable key generation on start
+    # - keys=
+      - TZ=Asia/Shanghai
+      # Enable UPnP
+      - upnp=false
+      # Enable log file generation
+      - log_to_file=true
+      - log_level=INFO
+    volumes:
+      - ~/chia/farmer/.chia:/root/.chia
+      - ~/chia/farmer/keyfile:/path/in/container
+    networks:
+      - chia-net
+  harvester:
+    container_name: harvester
+    restart: unless-stopped
+    image: ghcr.io/chia-network/chia:latest 
+    privileged: true
+    environment:
+      # Farmer Only
+      # - service=farmer
+      # Harvester Only
+      service: harvester
+      farmer_address: farmer
+      farmer_port: 8447
+      ca: /path/in/container
+      keys: copy
+      # Harvester Only END
+      # If you would like to add keys manually via mnemonic file
+      #keys=/path/in/container
+      # OR
+      # Disable key generation on start
+    # - keys=
+      TZ: Asia/Shanghai
+      # Enable UPnP
+      upnp: false
+      # Enable log file generation
+      log_to_file: true
+      log_level: INFO
+    volumes:
+      - ~/chia/farmer/.chia/mainnet/config/ssl/ca:/path/in/container
+      - ~/chia/farmer/plots:/plots
+    networks:
+      - chia-net
+    depends_on:
+        - farmer
+    
